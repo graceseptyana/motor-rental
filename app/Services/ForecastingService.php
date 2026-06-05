@@ -17,13 +17,20 @@ class ForecastingService {
     }
 
     private function callPythonApi(array $data, int $periods): array {
-        $response = Http::post($this->apiUrl, [
-            'data'    => $data,
-            'periods' => $periods,
-        ]);
-
-        return $response->json();
+    $response = Http::post($this->apiUrl, [
+        'data'    => $data,
+        'periods' => $periods,
+    ]);
+    
+    $result = $response->json();
+    
+    if (!$result || !isset($result['ls'])) {
+        \Log::error('Python API response: ' . $response->body());
+        throw new \Exception('Python API error: ' . $response->body());
     }
+    
+    return $result;
+}
 
     public function calculateAccuracy(array $actual, array $forecast): array {
         $n = count($actual);
