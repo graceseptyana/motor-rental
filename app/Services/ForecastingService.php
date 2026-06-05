@@ -5,8 +5,7 @@ use Illuminate\Support\Facades\Http;
 
 class ForecastingService {
 
-    private string $apiUrl = 'http://127.0.0.1:5000/predict';
-
+    private string $apiUrl = 'https://motor-rental-api-production.up.railway.app/predict';
     public function leastSquare(array $data, int $futureperiods): array {
         $result = $this->callPythonApi($data, $futureperiods);
         return $result['ls'];
