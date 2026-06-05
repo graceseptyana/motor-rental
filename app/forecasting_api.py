@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import numpy as np
 from statsmodels.tsa.holtwinters import SimpleExpSmoothing
+import os
 
 app = Flask(__name__)
 
@@ -83,10 +84,14 @@ def calculate_accuracy(actual, forecast):
         'mape': round((sum_pct / valid_n) * 100, 4) if valid_n > 0 else 0,
     }
 
+@app.route('/')
+def health():
+    return 'Flask API UD FALSUD Running!', 200
+
 @app.route('/predict', methods=['POST'])
 def predict():
-    body          = request.get_json()
-    data          = body['data']
+    body           = request.get_json()
+    data           = body['data']
     future_periods = body['periods']
 
     ls  = least_square(data, future_periods)
@@ -98,4 +103,5 @@ def predict():
     return jsonify({'ls': ls, 'des': des})
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
