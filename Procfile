@@ -1,1 +1,1 @@
-web: gunicorn app.forecasting_api:app --bind 0.0.0.0:$PORT
+web: php artisan serve --host=0.0.0.0 --port=$PORT
